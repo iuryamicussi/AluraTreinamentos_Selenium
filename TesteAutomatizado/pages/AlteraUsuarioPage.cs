@@ -8,30 +8,19 @@ using OpenQA.Selenium.Firefox;
 
 namespace TesteAutomatizado.pages
 {
-    public class NovoUsuarioPage
+    public class AlteraUsuarioPage
     {
         private IWebDriver driver;
 
         private IWebElement campoNome;
         private IWebElement campoEmail;
 
-        public NovoUsuarioPage(IWebDriver driver)
+        public AlteraUsuarioPage(IWebDriver driver)
         {
             this.driver = driver;
         }
 
-        public void Cadastra(string nome, string email)
-        {
-            campoNome = driver.FindElement(By.Name("usuario.nome")); 
-            campoEmail = driver.FindElement(By.Name("usuario.email"));
-
-            campoNome.SendKeys(nome);
-            campoEmail.SendKeys(email);
-
-            campoNome.Submit();
-        }
-
-        public void Editar(string nome, string email)
+        public void Alterar(string nome, string email)
         {
             campoNome = driver.FindElement(By.Name("usuario.nome"));
             campoEmail = driver.FindElement(By.Name("usuario.email"));
@@ -44,8 +33,5 @@ namespace TesteAutomatizado.pages
 
             campoNome.Submit();
         }
-
-        public bool ExisteNaPagina(string conteudo) => driver.PageSource.Contains(conteudo);
-
     }
 }

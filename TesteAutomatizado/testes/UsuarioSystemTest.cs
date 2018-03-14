@@ -21,6 +21,7 @@ namespace TesteAutomatizado.testes
         public void SetUpFixture()
         {
             driver = new FirefoxDriver(@"C:\Users\user\Source\Repos\TesteAutomatizado\TesteAutomatizado\bin");
+            new LimparAplicacao().LimparBanco(driver);
             usuarios = new UsuariosPage(driver);
         }
 
@@ -38,65 +39,67 @@ namespace TesteAutomatizado.testes
 
             usuarios.Visita();
             usuarios.Novo().Cadastra(nome, email);
-
-            Assert.IsTrue(usuarios.ExisteNaListagem(nome, email));
+            System.Threading.Thread.Sleep(1200);
+            var result = usuarios.ExisteNaListagem(nome, email);
+            Assert.IsTrue(result);
         }
 
         [Test]
         public void DeveBloquearEInformarODevidoPreenchimentoDoCampoUsuarioCasoVazio()
         {
-            driver.Navigate().GoToUrl("http://localhost:8080/usuarios/new");
+            usuarios.Visita();
 
-            IWebElement campoNome = driver.FindElement(By.Name("usuario.nome"));
-            IWebElement campoEmail = driver.FindElement(By.Name("usuario.email"));
-            IWebElement btnSalvar = driver.FindElement(By.Id("btnSalvar"));
-
-            campoNome.SendKeys("");
-            campoEmail.SendKeys("axavier@empresa.com.br");
-
-            btnSalvar.Click();
-
-            bool achouMensagemObrigatorio = driver.PageSource.Contains("Nome obrigatorio!");
-
-            Assert.IsTrue(achouMensagemObrigatorio);
+            var paginaNovoUsuario = usuarios.Novo();
+            paginaNovoUsuario.Cadastra("", "axavier@empresa.com.br");
+            System.Threading.Thread.Sleep(1200);
+            Assert.IsTrue(paginaNovoUsuario.ExisteNaPagina("Nome obrigatorio!"));
         }
 
         [Test]
         public void DeveBloquearEInformarODevidoPreenchimentoDoCampoUsuarioEEmailCasoVazios()
         {
-            driver.Navigate().GoToUrl("http://localhost:8080/usuarios/new");
+            usuarios.Visita();
 
-            driver.FindElement(By.Id("btnSalvar")).Click();
-
-            bool achouMensagemNomeObrigatorio = driver.PageSource.Contains("Nome obrigatorio!");
-            bool achouMensagemEmailObrigatorio = driver.PageSource.Contains("E-mail obrigatorio!");
-
-            Assert.IsTrue(achouMensagemNomeObrigatorio);
-            Assert.IsTrue(achouMensagemEmailObrigatorio);
+            var paginaNovoUsuario = usuarios.Novo();
+            paginaNovoUsuario.Cadastra("", "");
+            System.Threading.Thread.Sleep(1200);
+            Assert.IsTrue(paginaNovoUsuario.ExisteNaPagina("Nome obrigatorio!"));
+            Assert.IsTrue(paginaNovoUsuario.ExisteNaPagina("E-mail obrigatorio!"));
         }
 
         [Test]
-        public void DeveAcessarOLinkDeCadastroDeUsuarios()
+        public void DeveCadastrarUsuarioEExcluiloDaListaDeUsuarios()
         {
-            driver.Navigate().GoToUrl("http://localhost:8080/usuarios");
+            var nome = "Iury Nunes Amicussi";
+            var email = "iury@multiplice.com.br";
 
-            IWebElement linkNovoUsuario = driver.FindElement(By.LinkText("Novo Usuário"));
-            linkNovoUsuario.Click();
+            usuarios.Visita();
+            usuarios.Novo().Cadastra(nome, email);
+            System.Threading.Thread.Sleep(1200);
+            var result = usuarios.ExisteNaListagem(nome, email);
+            Assert.IsTrue(result);
 
-            IWebElement campoNome = driver.FindElement(By.Name("usuario.nome"));
-            IWebElement campoEmail = driver.FindElement(By.Name("usuario.email"));
-            IWebElement btnSalvar = driver.FindElement(By.Id("btnSalvar"));
+            usuarios.Excluir(1);
+            System.Threading.Thread.Sleep(1200);
+            result = usuarios.ExisteNaListagem(nome, email);
+            Assert.IsFalse(result);
+        }
 
-            campoNome.SendKeys("Adriano Xavier");
-            campoEmail.SendKeys("axavier@empresa.com.br");
+        [Test]
+        public void DeveCadastrarUsuarioEEditalo()
+        {
+            var nome = "Iury Nunes Amicussi";
+            var email = "iury@multiplice.com.br";
 
-            btnSalvar.Click();
+            usuarios.Visita();
+            usuarios.Novo().Cadastra(nome, email);
+            System.Threading.Thread.Sleep(1200);
+            Assert.IsTrue(usuarios.ExisteNaListagem(nome, email));
 
-            bool achouNome = driver.PageSource.Contains("Adriano Xavier");
-            bool achouEmail = driver.PageSource.Contains("axavier@empresa.com.br");
-
-            Assert.IsTrue(achouNome);
-            Assert.IsTrue(achouEmail);
+            usuarios.Editar(1).Alterar("pikachu","pikachu@pokemon.com");
+            System.Threading.Thread.Sleep(1200);
+            Assert.IsTrue(usuarios.ExisteNaListagem("pikachu", "pikachu@pokemon.com"));
+            Assert.IsFalse(usuarios.ExisteNaListagem(nome, email));
         }
     }
 }

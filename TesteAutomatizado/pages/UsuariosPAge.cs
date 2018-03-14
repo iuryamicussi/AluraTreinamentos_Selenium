@@ -35,5 +35,18 @@ namespace TesteAutomatizado.pages
         {
             driver.Navigate().GoToUrl("http://localhost:8080/usuarios");
         }
+
+        public void Excluir(int posicaoNaLista)
+        {
+            driver.FindElements(By.TagName("button"))[posicaoNaLista - 1].Click();
+            IAlert alert = driver.SwitchTo().Alert();
+            alert.Accept();
+        }
+
+        public AlteraUsuarioPage Editar(int posicaoLista)
+        {
+            driver.FindElements(By.LinkText("editar"))[posicaoLista - 1].Click();
+            return new AlteraUsuarioPage(driver);
+        }
     }
 }
