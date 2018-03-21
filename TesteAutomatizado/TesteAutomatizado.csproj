@@ -58,7 +58,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="pages\DetalhesLeilaoPage.cs" />
     <Compile Include="pages\LeilaoPage.cs" />
+    <Compile Include="testes\CriadorDeCenarios.cs" />
+    <Compile Include="testes\LanceSystemTest.cs" />
     <Compile Include="testes\LimparAplicacao.cs" />
     <Compile Include="pages\NovoLeilaoPage.cs" />
     <Compile Include="pages\AlteraUsuarioPage.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="testes\LeilaoSystemTest.cs" />
     <Compile Include="testes\UsuarioSystemTest.cs" />
+    <Compile Include="URLDaAplicacao.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

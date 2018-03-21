@@ -18,12 +18,18 @@ namespace TesteAutomatizado.pages
         }
 
         public void Visita() =>
-            driver.Navigate().GoToUrl("http://localhost:8080/leiloes");
+            driver.Navigate().GoToUrl(URLDaAplicacao.GetUrlBase() + "/leiloes");
 
         public NovoLeilaoPage Novo()
         {
-            driver.Navigate().GoToUrl("http://localhost:8080/leiloes/new");
+            driver.Navigate().GoToUrl(URLDaAplicacao.GetUrlBase() + "/leiloes/new");
             return new NovoLeilaoPage(driver);
+        }
+
+        public DetalhesLeilaoPage Detalhes(int index)
+        {
+            driver.FindElements(By.LinkText("exibir"))[index - 1].Click();
+            return new DetalhesLeilaoPage(driver);
         }
 
         public bool ExisteNaListagem(string nomeItem,double valorDoItem, string usuario ,bool itemUsado)

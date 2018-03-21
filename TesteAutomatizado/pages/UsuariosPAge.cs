@@ -33,7 +33,7 @@ namespace TesteAutomatizado.pages
 
         public void Visita()
         {
-            driver.Navigate().GoToUrl("http://localhost:8080/usuarios");
+            driver.Navigate().GoToUrl(URLDaAplicacao.GetUrlBase() + "/usuarios");
         }
 
         public void Excluir(int posicaoNaLista)
